@@ -1,0 +1,31 @@
+source 'https://github.com/CocoaPods/Specs.git'
+#source 'git@192.168.1.33:Pods/Specs.git'
+#source 'https://github.com/aliyun/aliyun-specs.git'
+
+platform :ios, '9.0'
+
+
+def shared_pods
+    pod 'AFNetworking', '2.6.3'
+    pod 'SDWebImage', '~> 4.1.0'
+    pod 'SDWebImage/WebP', '~> 4.1.0'
+    pod 'SDWebImage/GIF', '~> 4.1.0'
+    pod 'SSZipArchive', '~> 0.3'
+    pod 'FMDB', '~> 2.6'
+    pod 'Masonry', '0.6.1'
+end
+
+target 'Survival' do
+    shared_pods
+end
+
+post_install do |installer_representation|
+    installer_representation.pods_project.targets.each do |target|
+        target.build_configurations.each do |config|
+            config.build_settings['ONLY_ACTIVE_ARCH'] = 'NO'
+            if config.name == 'Release'
+                config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'NSLog(...)=']
+            end
+        end
+    end
+end
